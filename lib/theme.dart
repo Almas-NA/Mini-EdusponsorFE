@@ -91,8 +91,9 @@ final ThemeData myTheme = ThemeData(
   ),
   // dialogTheme: const DialogTheme(shape: RoundedRectangleBorder()),
   checkboxTheme: CheckboxThemeData(
-    fillColor:
-        WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+    fillColor: WidgetStateProperty.resolveWith<Color?>((
+      Set<WidgetState> states,
+    ) {
       if (states.contains(WidgetState.disabled)) {
         return null;
       }
@@ -103,8 +104,9 @@ final ThemeData myTheme = ThemeData(
     }),
   ),
   radioTheme: RadioThemeData(
-    fillColor:
-        WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+    fillColor: WidgetStateProperty.resolveWith<Color?>((
+      Set<WidgetState> states,
+    ) {
       if (states.contains(WidgetState.disabled)) {
         return null;
       }
@@ -115,8 +117,9 @@ final ThemeData myTheme = ThemeData(
     }),
   ),
   switchTheme: SwitchThemeData(
-    thumbColor:
-        WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+    thumbColor: WidgetStateProperty.resolveWith<Color?>((
+      Set<WidgetState> states,
+    ) {
       if (states.contains(WidgetState.disabled)) {
         return null;
       }
@@ -125,8 +128,9 @@ final ThemeData myTheme = ThemeData(
       }
       return null;
     }),
-    trackColor:
-        WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
+    trackColor: WidgetStateProperty.resolveWith<Color?>((
+      Set<WidgetState> states,
+    ) {
       if (states.contains(WidgetState.disabled)) {
         return null;
       }
@@ -136,9 +140,10 @@ final ThemeData myTheme = ThemeData(
       return null;
     }),
   ),
-  bottomAppBarTheme: const BottomAppBarThemeData(color: Color(0xffffffff)),
+  bottomAppBarTheme: const BottomAppBarTheme(color: Color(0xffffffff)),
   colorScheme: ColorScheme.fromSwatch(primarySwatch: primaryShade)
       .copyWith(secondary: secondaryColor)
       .copyWith(surface: primaryShade.shade200)
-      .copyWith(error: const Color(0xffd32f2f)), dialogTheme: DialogThemeData(backgroundColor: const Color(0xffffffff)),
+      .copyWith(error: const Color(0xffd32f2f)),
+  dialogTheme: DialogThemeData(backgroundColor: const Color(0xffffffff)),
 );
