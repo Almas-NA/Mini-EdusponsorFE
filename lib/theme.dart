@@ -140,7 +140,7 @@ final ThemeData myTheme = ThemeData(
       return null;
     }),
   ),
-  bottomAppBarTheme: const BottomAppBarTheme(color: Color(0xffffffff)),
+  bottomAppBarTheme: const BottomAppBarThemeData(color: Color(0xffffffff)),
   colorScheme: ColorScheme.fromSwatch(primarySwatch: primaryShade)
       .copyWith(secondary: secondaryColor)
       .copyWith(surface: primaryShade.shade200)

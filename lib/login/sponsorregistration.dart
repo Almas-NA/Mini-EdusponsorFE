@@ -1,12 +1,8 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:edusponsor/Common/inputdecoration.dart';
 import 'package:edusponsor/Common/loading_indicator%20copy.dart';
 import 'package:edusponsor/login/registercubit/register_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_document_picker/flutter_document_picker.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 class SponsorRegistration extends StatefulWidget {
@@ -26,7 +22,6 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
   final TextEditingController _emailController = TextEditingController();
   String? _selectedLocation;
   String? _base64IncomeProof;
-  String? _pickedFileName;
 
   // State variables for password visibility
   bool _isPasswordVisible = false;
@@ -71,30 +66,6 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
         "location": _selectedLocation,
       };
       context.read<RegisterCubit>().registerSponsor(body);
-    }
-  }
-
-  Future<void> _pickPDF() async {
-    print("PDF picker tapped");
-    try {
-      final path = await FlutterDocumentPicker.openDocument(
-        params: FlutterDocumentPickerParams(
-          allowedFileExtensions: ['pdf'],
-          allowedUtiTypes: ['com.adobe.pdf'],
-          allowedMimeTypes: ['application/pdf'],
-        ),
-      );
-
-      if (path != null) {
-        final file = File(path);
-        final bytes = await file.readAsBytes();
-        setState(() {
-          _base64IncomeProof = base64Encode(bytes);
-          _pickedFileName = file.uri.pathSegments.last;
-        });
-      }
-    } catch (e) {
-      print("File picking error: $e");
     }
   }
 
@@ -284,29 +255,6 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
                               controller: _emailController,
                               decoration: getInputDecoration("Email"),
                               validator: _validateEmail,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                            child: TextFormField(
-                              decoration: getInputDecoration("Income proof")
-                                  .copyWith(
-                                    suffixIcon: const Icon(
-                                      Icons.attach_file,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                              controller: TextEditingController(
-                                text: _pickedFileName ?? '',
-                              ),
-                              validator: (value) {
-                                if (_base64IncomeProof == null) {
-                                  return "Please upload income proof";
-                                }
-                                return null;
-                              },
-                              readOnly: true,
-                              onTap: _pickPDF,
                             ),
                           ),
                           Padding(

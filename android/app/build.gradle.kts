@@ -7,6 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.edusponsor"
+    namespace = "com.mr.flutter.plugin.documentpicker"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
