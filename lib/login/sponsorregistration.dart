@@ -1,6 +1,9 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:edusponsor/Common/inputdecoration.dart';
 import 'package:edusponsor/Common/loading_indicator%20copy.dart';
 import 'package:edusponsor/login/registercubit/register_cubit.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -55,12 +58,34 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
     return null;
   }
 
+  Future<void> _pickDocument() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'jpg', 'png', 'jpeg'],
+    );
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      List<int> fileBytes = await file.readAsBytes();
+      setState(() {
+        _base64IncomeProof = base64Encode(fileBytes);
+      });
+    }
+  }
+
   void _submitForm() {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
+      if (_base64IncomeProof == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Please upload income proof")),
+        );
+        return;
+      }
+
       Map body = {
         "username": _usernameController.text,
         "password": _passwordController.text,
-        "fullname": _fullNameController.text,
+        "fullName": _fullNameController.text,
         "email": _emailController.text,
         "incomeProofBaseSF": _base64IncomeProof,
         "location": _selectedLocation,
@@ -257,6 +282,41 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
                               validator: _validateEmail,
                             ),
                           ),
+                          // 👇 File picker field added here
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: _pickDocument,
+                                  label: const Text(
+                                    "Upload Income Proof",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white,
+                                      fontFamily: 'Poppins',
+                                    ),
+                                  ),
+                                  icon: const Icon(Icons.upload_file, color: Colors.white),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF0D6EFD),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+                                    elevation: 5,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                if (_base64IncomeProof != null)
+                                  const Text(
+                                    "Document uploaded successfully ✔",
+                                    style: TextStyle(color: Colors.green, fontSize: 14),
+                                  ),
+                              ],
+                            ),
+                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                             child: DropdownButtonFormField<String>(
@@ -298,28 +358,6 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
                                   color: Colors.white,
                                   fontFamily: 'Poppins',
                                 ),
-                              ),
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              elevation: 5,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: const Text(
-                              "Back",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                fontFamily: 'Poppins',
                               ),
                             ),
                           ),

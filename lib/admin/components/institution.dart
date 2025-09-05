@@ -1,5 +1,5 @@
 import 'package:edusponsor/Common/loading_indicator%20copy.dart';
-import 'package:edusponsor/admin/components/syncfusiongrid.dart';
+import 'package:edusponsor/admin/components/sfgridinstitution.dart';
 import 'package:edusponsor/admin/cubits/institutions/allinstitutioncubit/allinstitution_cubit.dart';
 import 'package:edusponsor/admin/cubits/institutions/institutioncubit/institutions_cubit.dart';
 import 'package:edusponsor/admin/cubits/institutions/institutionstatus/institutionstatus_cubit.dart';
@@ -45,7 +45,7 @@ class _AdminInstitutionsState extends State<AdminInstitutions> {
       body: BlocListener<InstitutionstatusCubit, InstitutionstatusState>(
         listener: (context, state) {
           if (state is InstitutionsStatusChangeSuccess) {
-            context.read<InstitutionsCubit>().getInstitutionsNotApproved();
+            _getInstitutions();
           }
         },
         child: SingleChildScrollView(
@@ -127,19 +127,17 @@ class _AdminInstitutionsState extends State<AdminInstitutions> {
                                   ),
                                 );
                               }
-                  
+
                               sourceDataOfInstitutions =
                                   SFDataGridSourceInstitution(
                                     context: context,
                                     dataSource: state.institutionNotApproved,
-                                    tableName: "pendingInstitutions"
+                                    tableName: "pendingInstitutions",
                                   );
-                  
+
                               return Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(
-                                  12,
-                                ),
+                                padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -188,7 +186,9 @@ class _AdminInstitutionsState extends State<AdminInstitutions> {
                                           minimumWidth: scalefactor > 1
                                               ? 200
                                               : 120,
-                                          label: _buildHeader("Institution Name"),
+                                          label: _buildHeader(
+                                            "Institution Name",
+                                          ),
                                         ),
                                         GridColumn(
                                           columnName: 'email',
@@ -304,32 +304,16 @@ class _AdminInstitutionsState extends State<AdminInstitutions> {
                               );
                             }
                             if (state is AllinstitutionLoaded) {
-                              if (state.institutions.isEmpty) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Text(
-                                    "No institutions pending approval.",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[700],
-                                    ),
-                                  ),
-                                );
-                              }
-                  
                               sourceDataOfInstitutions =
                                   SFDataGridSourceInstitution(
                                     context: context,
                                     dataSource: state.institutions,
-                                    tableName: "allInstitutions"
+                                    tableName: "allInstitutions",
                                   );
-                  
+
                               return Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.all(
-                                  12,
-                                ),
+                                padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -378,7 +362,9 @@ class _AdminInstitutionsState extends State<AdminInstitutions> {
                                           minimumWidth: scalefactor > 1
                                               ? 200
                                               : 120,
-                                          label: _buildHeader("Institution Name"),
+                                          label: _buildHeader(
+                                            "Institution Name",
+                                          ),
                                         ),
                                         GridColumn(
                                           columnName: 'institutionId',
