@@ -43,11 +43,11 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         itemCount: dashboardData.length,
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 6,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                          childAspectRatio: 1.2,
-                        ),
+                              crossAxisCount: 4,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 16,
+                              childAspectRatio: 1.2,
+                            ),
                         itemBuilder: (context, index) {
                           final item = dashboardData[index];
 
@@ -77,14 +77,17 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       // Icon and Title
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          _getDashboardIcon(item['displayName']),
+                                          _getDashboardIcon(
+                                            item['displayName'],
+                                          ),
                                           const SizedBox(width: 8),
                                           Expanded(
                                             child: Text(
@@ -165,11 +168,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
       default:
         iconData = Icons.dashboard;
     }
-    return Icon(
-      iconData,
-      size: 32,
-      color: Colors.white,
-    );
+    return Icon(iconData, size: 32, color: Colors.white);
   }
 
   Widget _buildInfoRow(
@@ -186,7 +185,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
               label == "Approved"
                   ? Icons.check_circle_outline
                   : Icons.pending_actions,
-              color: label == "Approved" ? secondaryShadeLight : Colors.redAccent,
+              color: label == "Approved"
+                  ? secondaryShadeLight
+                  : Colors.redAccent,
               size: 16,
             ),
             const SizedBox(width: 4),
