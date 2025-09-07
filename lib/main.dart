@@ -10,6 +10,9 @@ import 'package:edusponsor/admin/cubits/sponsors/sponsorcubit/sponsor_cubit.dart
 import 'package:edusponsor/admin/cubits/sponsors/sponsorstatus/sponsorstatus_cubit.dart';
 import 'package:edusponsor/approuter/app_router.dart';
 import 'package:edusponsor/global_bloc_observer.dart';
+import 'package:edusponsor/institution/cubit/institutedashboardcubit/instdashboardcubit_cubit.dart';
+import 'package:edusponsor/institution/cubit/instituteprofilecubit/institutionprofile_cubit.dart';
+import 'package:edusponsor/institution/cubit/studentcubit/student_cubit.dart';
 import 'package:edusponsor/login/authcubit/user_cubit.dart';
 import 'package:edusponsor/login/registercubit/register_cubit.dart';
 import 'package:edusponsor/theme.dart';
@@ -65,6 +68,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => SponsorstatusCubit()),
         BlocProvider(create: (context) => AllsponsorcubitCubit()),
         BlocProvider(create: (context) => DashboardCubit()),
+        BlocProvider(create: (context) => InstdashboardcubitCubit()),
+        BlocProvider(create: (context) => InstitutionprofileCubit()),
+        BlocProvider(create: (context) => StudentCubit()),
       ],
       child: GetMaterialApp(
         title: 'Flutter Demo',

@@ -3,7 +3,10 @@ import 'package:edusponsor/admin/components/dashboard.dart';
 import 'package:edusponsor/admin/components/institution.dart';
 import 'package:edusponsor/admin/components/settings.dart';
 import 'package:edusponsor/admin/components/sponsors.dart';
-import 'package:edusponsor/institution/institution.dart';
+import 'package:edusponsor/institution/components/instdashboard.dart';
+import 'package:edusponsor/institution/components/instsettings.dart';
+import 'package:edusponsor/institution/components/inststudentadd.dart';
+import 'package:edusponsor/institution/components/inststudents.dart';
 import 'package:edusponsor/login/institutionregister.dart';
 import 'package:edusponsor/login/login.dart';
 import 'package:edusponsor/login/sponsorregistration.dart';
@@ -56,7 +59,22 @@ class AppRouter {
 
       case '/institution/dashboard':
         return MaterialPageRoute(
-          builder: (_) => const Institution(),
+          builder: (_) => const InstitutionDashboard(),
+        );
+
+      case '/institution/students':
+        return MaterialPageRoute(
+          builder: (_) => const InstitutionStudents(),
+        );
+
+      case '/institution/students/add':
+        return MaterialPageRoute(
+          builder: (_) => const InstitutionStudentAdd(),
+        );
+
+      case '/institution/settings':
+        return MaterialPageRoute(
+          builder: (_) => const InstitutionSettings(),
         );
 
 //################  Sponsor  ################//

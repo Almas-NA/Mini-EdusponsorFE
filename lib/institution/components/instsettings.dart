@@ -1,22 +1,22 @@
 import 'package:edusponsor/Common/inputdecoration.dart';
-import 'package:edusponsor/Common/loading_indicator.dart';
+import 'package:edusponsor/Common/loading_indicator%20copy.dart';
 import 'package:edusponsor/Common/widgets.dart';
-import 'package:edusponsor/admin/cubits/settings/profile/profile_cubit.dart';
 import 'package:edusponsor/config.dart';
+import 'package:edusponsor/institution/cubit/instituteprofilecubit/institutionprofile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hive/hive.dart';
 
-class AdminSettings extends StatefulWidget {
-  const AdminSettings({super.key});
+class InstitutionSettings extends StatefulWidget {
+  const InstitutionSettings({super.key});
 
   @override
-  State<AdminSettings> createState() => _AdminSettingsState();
+  State<InstitutionSettings> createState() => _InstitutionSettingsState();
 }
 
-class _AdminSettingsState extends State<AdminSettings> {
+class _InstitutionSettingsState extends State<InstitutionSettings> {
   Box box = Hive.box('eduSponsor');
   final _formKey = GlobalKey<FormBuilderState>();
   bool isEditMode = false;
@@ -37,11 +37,12 @@ class _AdminSettingsState extends State<AdminSettings> {
 
           Map body = {
             "id": box.get('userId'),
-            "firstName": formValues['firstname'],
-            "secondName": formValues['secondname'],
+            "instituteName": formValues['instituteName'],
+            "email": formValues['email'],
+            "instituteId": formValues['instituteId'],
           };
 
-          context.read<ProfileCubit>().updateAdminInfo(body);
+          context.read<InstitutionprofileCubit>().updateInstitutionInfo(body);
         }
       },
     );
@@ -49,7 +50,7 @@ class _AdminSettingsState extends State<AdminSettings> {
 
   void _getProfile() {
     Map body = {"id": box.get('userId')};
-    context.read<ProfileCubit>().getAdminInfo(body);
+    context.read<InstitutionprofileCubit>().getInstitutionInfo(body);
   }
 
   @override
@@ -59,9 +60,9 @@ class _AdminSettingsState extends State<AdminSettings> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ProfileCubit, ProfileState>(
+    return BlocListener<InstitutionprofileCubit, InstitutionprofileState>(
       listener: (context, state) {
-        if (state is ProfileUpdateSuccess) {
+        if (state is InstitutionprofileUpdateSuccess) {
           _getProfile();
           setState(() {
             isEditMode = !isEditMode;
@@ -72,9 +73,9 @@ class _AdminSettingsState extends State<AdminSettings> {
         body: Center(
           child: Column(
             children: [
-              BlocBuilder<ProfileCubit, ProfileState>(
+              BlocBuilder<InstitutionprofileCubit, InstitutionprofileState>(
                 builder: (context, state) {
-                  if (state is ProfileInfoLoading) {
+                  if (state is InstitutionprofileInfoLoading) {
                     return Padding(
                       padding: EdgeInsets.symmetric(
                         vertical: MediaQuery.of(context).size.height * 0.05,
@@ -166,14 +167,15 @@ class _AdminSettingsState extends State<AdminSettings> {
                                 child: Column(
                                   children: [
                                     FormBuilderTextField(
-                                      name: 'firstname',
+                                      name: 'instituteName',
                                       initialValue:
-                                          (state is ProfileInfoSuccess)
-                                          ? state.adminDetails['firstName'] ??
+                                          (state
+                                              is InstitutionprofileInfoSuccess)
+                                          ? state.institutionDetails['instituteName'] ??
                                                 ""
                                           : "",
                                       decoration: getInputDecoration(
-                                        "First Name",
+                                        "Institute Name",
                                       ),
                                       validator: FormBuilderValidators.compose([
                                         FormBuilderValidators.required(),
@@ -182,14 +184,30 @@ class _AdminSettingsState extends State<AdminSettings> {
                                     ),
                                     const SizedBox(height: 16),
                                     FormBuilderTextField(
-                                      name: 'secondname',
+                                      name: 'email',
                                       initialValue:
-                                          (state is ProfileInfoSuccess)
-                                          ? state.adminDetails['secondName'] ??
+                                          (state
+                                              is InstitutionprofileInfoSuccess)
+                                          ? state.institutionDetails['email'] ??
+                                                ""
+                                          : "",
+                                      decoration: getInputDecoration("Email"),
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(),
+                                        FormBuilderValidators.minLength(2),
+                                      ]),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    FormBuilderTextField(
+                                      name: 'instituteId',
+                                      initialValue:
+                                          (state
+                                              is InstitutionprofileInfoSuccess)
+                                          ? state.institutionDetails['instituteId'] ??
                                                 ""
                                           : "",
                                       decoration: getInputDecoration(
-                                        "Second Name",
+                                        "Institution ID",
                                       ),
                                       validator: FormBuilderValidators.compose([
                                         FormBuilderValidators.required(),
@@ -197,44 +215,55 @@ class _AdminSettingsState extends State<AdminSettings> {
                                       ]),
                                     ),
                                     const SizedBox(height: 20),
-                                    BlocBuilder<ProfileCubit, ProfileState>(
+                                    BlocBuilder<
+                                      InstitutionprofileCubit,
+                                      InstitutionprofileState
+                                    >(
                                       builder: (context, state) {
-                                        if (state is ProfileUpdateLoading) {
+                                        if (state
+                                            is InstitutionprofileUpdateLoading) {
                                           return LoadingIndicator();
                                         }
-                                        return SizedBox(
-                                          width:
-                                              MediaQuery.of(
-                                                context,
-                                              ).size.width *
-                                              0.2,
-                                          child: ElevatedButton.icon(
-                                            onPressed: _updateProfile,
-                                            icon: const Icon(Icons.save),
-                                            label: const Text(
-                                              "Update",
-                                              style: TextStyle(
-                                                color: Colors.white,
+                                        return Center(
+                                          child: SizedBox(
+                                            width:
+                                                MediaQuery.of(
+                                                  context,
+                                                ).size.width *
+                                                0.3,
+                                            height: 50,
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    primaryShadeLight,
+                                                foregroundColor:
+                                                    primaryShadeLight,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      vertical: 14,
+                                                    ),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                ),
+                                                textStyle: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                elevation: 3,
                                               ),
-                                            ),
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:
-                                                  primaryShadeLight,
-                                              foregroundColor:
-                                                  primaryShadeLight,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    vertical: 14,
+                                              onPressed: _updateProfile,
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                child: const Text(
+                                                  "Update",
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
                                                   ),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
+                                                ),
                                               ),
-                                              textStyle: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                              elevation: 3,
                                             ),
                                           ),
                                         );

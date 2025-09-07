@@ -43,41 +43,39 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             box.put('userId', state.userDetails['id'] ?? "");
-            if (state.userDetails['role'] == UserRoleEnum.ADMIN.name) {
-              if (!kIsWeb) {
+            if (!kIsWeb) {
+              if (state.userDetails['role'] == UserRoleEnum.SPONSOR.name) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Sponsor()),
+                );
+              } else if (state.userDetails['role'] == UserRoleEnum.ADMIN.name ||
+                  state.userDetails['role'] == UserRoleEnum.INSTITUTION.name) {
                 displaySnackBar(
-                  message: "Admin have no access through mobile, Try on web!",
+                  message: "This user role can only be accessed on the web.",
                   type: ServerResponseType.WARNING.name,
                 );
               } else {
+                displaySnackBar(
+                  message: "No user detected!",
+                  type: ServerResponseType.WARNING.name,
+                );
+              }
+            } else {
+              if (state.userDetails['role'] == UserRoleEnum.ADMIN.name) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const Admin()),
                 );
-              }
-            } else {
-              if (!kIsWeb) {
-                if (state.userDetails['role'] ==
-                    UserRoleEnum.INSTITUTION.name) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const Institution()),
-                  );
-                } else if (state.userDetails['role'] ==
-                    UserRoleEnum.SPONSOR.name) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const Sponsor()),
-                  );
-                } else {
-                  displaySnackBar(
-                    message: "No user detected!",
-                    type: ServerResponseType.WARNING.name,
-                  );
-                }
+              } else if (state.userDetails['role'] ==
+                  UserRoleEnum.INSTITUTION.name) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Institution()),
+                );
               } else {
                 displaySnackBar(
-                  message: "Only admin have access through web, Try on mobile!",
+                  message: "This user role can only be accessed on mobile.",
                   type: ServerResponseType.WARNING.name,
                 );
               }
@@ -86,11 +84,8 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: LayoutBuilder(
           builder: (context, constraints) {
-            // breakpoint - adjust if needed
             bool isWide = constraints.maxWidth > 800;
-
             if (isWide) {
-              // Web layout (Row)
               return Stack(
                 children: [
                   SizedBox.expand(
@@ -117,7 +112,6 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               );
             } else {
-              // Mobile layout (Column)
               return Stack(
                 children: [
                   SizedBox.expand(
