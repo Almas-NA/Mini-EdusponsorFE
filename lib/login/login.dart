@@ -7,6 +7,7 @@ import 'package:edusponsor/admin/admin.dart';
 import 'package:edusponsor/institution/institution.dart';
 import 'package:edusponsor/login/authcubit/user_cubit.dart';
 import 'package:edusponsor/sponsor/sponsor.dart';
+import 'package:edusponsor/student/student.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,11 +44,18 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is LoginSuccess) {
             box.put('userId', state.userDetails['id'] ?? "");
+            box.put('refId', state.userDetails['refId'] ?? "");
             if (!kIsWeb) {
               if (state.userDetails['role'] == UserRoleEnum.SPONSOR.name) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const Sponsor()),
+                );
+              } else if (state.userDetails['role'] ==
+                  UserRoleEnum.STUDENT.name) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Student()),
                 );
               } else if (state.userDetails['role'] == UserRoleEnum.ADMIN.name ||
                   state.userDetails['role'] == UserRoleEnum.INSTITUTION.name) {

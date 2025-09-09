@@ -42,7 +42,7 @@ class RegisterCubit extends Cubit<RegisterState> {
         requiresToken: false,
       );
       if ((response?['type'] == ServerResponseType.SUCCESS.name)) {
-        emit(RegisterInstSuccess());
+        emit(RegisterSponsSuccess());
       } else if (response?['type'] == ServerResponseType.ERROR.name) {
         emit(RegisterSponsFailed());
       } else {
