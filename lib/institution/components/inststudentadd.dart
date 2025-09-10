@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'package:edusponsor/Common/inputdecoration.dart';
 import 'package:edusponsor/Common/loading_indicator%20copy.dart';
 import 'package:edusponsor/config.dart';
 import 'package:edusponsor/institution/cubit/studentcubit/student_cubit.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -36,6 +38,25 @@ class _InstitutionStudentAddState extends State<InstitutionStudentAdd> {
   final List<String> _years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
   final List<String> _relations = ['Father', 'Mother', 'Guardian', 'Other'];
 
+  // For PDF Upload
+  String? _incomeProofBase64;
+  String? _selectedFileName;
+
+  Future<void> _pickPdf() async {
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+    type: FileType.custom,
+    allowedExtensions: ['pdf'],
+    withData: true, // Important for Flutter Web
+  );
+
+  if (result != null) {
+    setState(() {
+      _incomeProofBase64 = base64Encode(result.files.single.bytes!); // ✅ works on web
+      _selectedFileName = result.files.single.name;
+    });
+  }
+}
+
   @override
   void dispose() {
     _firstNameController.dispose();
@@ -54,6 +75,16 @@ class _InstitutionStudentAddState extends State<InstitutionStudentAdd> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+      if (_incomeProofBase64 == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Please upload Income Proof PDF"),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+        return;
+      }
+
       final studentData = {
         "instituteId": box.get('userId'),
         "firstName": _firstNameController.text,
@@ -69,6 +100,7 @@ class _InstitutionStudentAddState extends State<InstitutionStudentAdd> {
         "parentContact": _parentContactController.text,
         "relation": _selectedRelation,
         "annualIncome": _incomeController.text,
+        "incomeProof": _incomeProofBase64, // ✅ attach pdf
       };
       context.read<StudentCubit>().addStudent(studentData);
     }
@@ -109,6 +141,8 @@ class _InstitutionStudentAddState extends State<InstitutionStudentAdd> {
               _incomeController.clear();
               _usernameController.clear();
               _passwordController.clear();
+              _incomeProofBase64 = null;
+              _selectedFileName = null;
               _formKey = GlobalKey<FormState>();
 
               context.read<StudentCubit>().reset();
@@ -301,6 +335,40 @@ class _InstitutionStudentAddState extends State<InstitutionStudentAdd> {
                             ),
                         validator: (value) =>
                             value!.isEmpty ? "Enter annual income" : null,
+                      ),
+
+                      const SizedBox(height: 12),
+                      Text(
+                        "Upload Income Proof (PDF)",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: primaryShadeLight,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _selectedFileName ?? "No file selected",
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: _selectedFileName == null
+                                    ? Colors.grey
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: _pickPdf,
+                            icon: const Icon(Icons.upload_file),
+                            label: const Text("Choose File"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryShadeLight,
+                              foregroundColor: Colors.white,
+                            ),
+                          ),
+                        ],
                       ),
 
                       const SizedBox(height: 30),

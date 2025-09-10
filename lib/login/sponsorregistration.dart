@@ -23,6 +23,7 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
   final TextEditingController _rePasswordController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _contactNumber= TextEditingController();
   String? _selectedLocation;
   String? _base64IncomeProof;
 
@@ -86,6 +87,7 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
         "password": _passwordController.text,
         "fullName": _fullNameController.text,
         "email": _emailController.text,
+        "contactNumber": _contactNumber.text,
         "incomeProofBaseSF": _base64IncomeProof,
         "location": _selectedLocation,
       };
@@ -251,6 +253,14 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
                 TextFormField(
                   controller: _emailController,
                   decoration: getInputDecoration("Email"),
+                  validator: _validateEmail,
+                ),
+                const SizedBox(height: 12),
+
+                // Email
+                TextFormField(
+                  controller: _emailController,
+                  decoration: getInputDecoration("contactNumber"),
                   validator: _validateEmail,
                 ),
                 const SizedBox(height: 12),

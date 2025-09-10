@@ -1,6 +1,10 @@
 import 'package:edusponsor/student/components/studdashboard.dart';
+import 'package:edusponsor/student/components/studsettings.dart';
+import 'package:edusponsor/student/cubit/studentinfocubit/studinfo_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:edusponsor/config.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 
 class Student extends StatefulWidget {
   const Student({super.key});
@@ -10,13 +14,24 @@ class Student extends StatefulWidget {
 }
 
 class _StudentState extends State<Student> {
-  int _selectedIndex = 0; // 0 = Dashboard, 1 = Profile, 2 = Settings
+  Box box = Hive.box('eduSponsor');
+  int _selectedIndex = 0;
 
   final List<Widget> _pages = [
     const StudentDashboard(),
-    const _ProfilePage(),
-    const _SettingsPage(),
+    const StudentSettings(),
   ];
+  
+  void _getProfile() {
+    Map body = {"id": box.get('refId')};
+    context.read<StudinfoCubit>().getStudentInfo(body);
+  }
+
+  @override
+  void initState() {
+    _getProfile();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +39,7 @@ class _StudentState extends State<Student> {
       backgroundColor: secondaryShade.shade50,
 
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60), // custom height
+        preferredSize: Size.fromHeight(60),
         child: AppBar(
           automaticallyImplyLeading: true,
           elevation: 0,
@@ -47,8 +62,6 @@ class _StudentState extends State<Student> {
           title: Text(
             _selectedIndex == 0
                 ? "Dashboard"
-                : _selectedIndex == 1
-                ? "Profile"
                 : "Settings",
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -67,7 +80,7 @@ class _StudentState extends State<Student> {
           centerTitle: true,
         ),
       ),
-      drawer: _buildDrawer(),
+      drawer: _buildDrawer(context),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 350),
         transitionBuilder: (child, animation) =>
@@ -77,115 +90,129 @@ class _StudentState extends State<Student> {
     );
   }
 
-  Drawer _buildDrawer() {
-    return Drawer(
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topRight: Radius.circular(24),
-          bottomRight: Radius.circular(24),
-        ),
+ Drawer _buildDrawer(BuildContext context) {
+  return Drawer(
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(24),
+        bottomRight: Radius.circular(24),
       ),
-      child: Column(
-        children: [
-          // 🌊 Attractive Header
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(top: 40, bottom: 20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [primaryShade.shade500, secondaryShade.shade400],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+    ),
+    child: BlocBuilder<StudinfoCubit, StudinfoState>(
+      builder: (context, state) {
+        if (state is StudinfoLoading) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (state is StudinfoError) {
+          return const Center(child: Text("Failed to load student info"));
+        } else if (state is StudinfoLoaded) {
+          final student = state.studentDetails;
+
+          return Column(
+            children: [
+              // 🌊 Attractive Header
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.only(top: 40, bottom: 20),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [primaryShade.shade500, secondaryShade.shade400],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: const BorderRadius.only(
+                    topRight: Radius.circular(24),
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 35 * scalefactor,
+                      backgroundColor: Colors.white,
+                      child: Icon(
+                        Icons.person,
+                        size: 42 * scalefactor,
+                        color: primaryShade,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "${student['firstName']} ${student['secondName']}",
+                      style: TextStyle(
+                        fontSize: 16 * scalefactor,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      student['studentEmail'] ?? "",
+                      style: TextStyle(
+                        fontSize: 13 * scalefactor,
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(24),
+
+              // 📌 Drawer Items
+              const SizedBox(height: 10),
+              _buildDrawerItem(Icons.dashboard_rounded, "Dashboard", 0),
+              _buildDrawerItem(Icons.settings_rounded, "Settings", 1),
+
+              const Spacer(),
+
+              // 🔽 Footer Section
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+                child: Column(
+                  children: [
+                    const Divider(),
+                    ListTile(
+                      leading: Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.red.shade50,
+                        ),
+                        child: Icon(
+                          Icons.logout_rounded,
+                          color: Colors.red.shade400,
+                        ),
+                      ),
+                      title: Text(
+                        "Logout",
+                        style: TextStyle(
+                          fontSize: 14 * scalefactor,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.red.shade400,
+                        ),
+                      ),
+                      onTap: () {
+                        // TODO: add logout function
+                      },
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      "EduSponsor v1.0.0",
+                      style: TextStyle(
+                        fontSize: 12 * scalefactor,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            child: Column(
-              children: [
-                CircleAvatar(
-                  radius: 35 * scalefactor,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.person,
-                    size: 42 * scalefactor,
-                    color: primaryShade,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  "Student Name",
-                  style: TextStyle(
-                    fontSize: 16 * scalefactor,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                Text(
-                  "student@email.com",
-                  style: TextStyle(
-                    fontSize: 13 * scalefactor,
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-                ),
-              ],
-            ),
-          ),
+            ],
+          );
+        }
 
-          // 📌 Drawer Items
-          const SizedBox(height: 10),
-          _buildDrawerItem(Icons.dashboard_rounded, "Dashboard", 0),
-          _buildDrawerItem(Icons.person_rounded, "Profile", 1),
-          _buildDrawerItem(Icons.settings_rounded, "Settings", 2),
-
-          const Spacer(),
-
-          // 🔽 Footer Section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-            child: Column(
-              children: [
-                const Divider(),
-                ListTile(
-                  leading: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.red.shade50,
-                    ),
-                    child: Icon(
-                      Icons.logout_rounded,
-                      color: Colors.red.shade400,
-                    ),
-                  ),
-                  title: Text(
-                    "Logout",
-                    style: TextStyle(
-                      fontSize: 14 * scalefactor,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.red.shade400,
-                    ),
-                  ),
-                  onTap: () {
-                    // TODO: Handle logout
-                  },
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  "EduSponsor v1.0.0",
-                  style: TextStyle(
-                    fontSize: 12 * scalefactor,
-                    color: Colors.grey[500],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        // Default placeholder
+        return const Center(child: CircularProgressIndicator());
+      },
+    ),
+  );
+}
 
   Widget _buildDrawerItem(IconData icon, String label, int index) {
     final bool isSelected = _selectedIndex == index;
@@ -217,91 +244,3 @@ class _StudentState extends State<Student> {
   }
 }
 
-// 📍 Profile Page
-class _ProfilePage extends StatelessWidget {
-  const _ProfilePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Card(
-        color: Colors.white,
-        elevation: 8,
-        shadowColor: primaryShade.shade200,
-        margin: const EdgeInsets.all(24),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircleAvatar(
-                radius: 45 * scalefactor,
-                backgroundColor: secondaryShade.shade400,
-                child: Icon(Icons.person, size: 52, color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Student Name",
-                style: TextStyle(
-                  fontSize: 18 * scalefactor,
-                  fontWeight: FontWeight.bold,
-                  color: primaryShade.shade700,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                "student@email.com",
-                style: TextStyle(
-                  fontSize: 14 * scalefactor,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryShade,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 24,
-                  ),
-                ),
-                icon: const Icon(Icons.edit, size: 18),
-                label: Text(
-                  "Edit Profile",
-                  style: TextStyle(fontSize: 14 * scalefactor),
-                ),
-                onPressed: () {
-                  // TODO: handle edit profile
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// 📍 Settings Page (placeholder)
-class _SettingsPage extends StatelessWidget {
-  const _SettingsPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        "Settings Page (Coming Soon)",
-        style: TextStyle(
-          fontSize: 16 * scalefactor,
-          fontWeight: FontWeight.w500,
-          color: Colors.grey[700],
-        ),
-      ),
-    );
-  }
-}

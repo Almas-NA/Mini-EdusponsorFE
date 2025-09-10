@@ -6,7 +6,6 @@ import 'package:edusponsor/admin/components/sponsors.dart';
 import 'package:edusponsor/institution/components/instdashboard.dart';
 import 'package:edusponsor/institution/components/instsettings.dart';
 import 'package:edusponsor/institution/components/inststudentadd.dart';
-import 'package:edusponsor/institution/components/inststudents.dart';
 import 'package:edusponsor/login/institutionregister.dart';
 import 'package:edusponsor/login/login.dart';
 import 'package:edusponsor/login/sponsorregistration.dart';
@@ -60,11 +59,6 @@ class AppRouter {
       case '/institution/dashboard':
         return MaterialPageRoute(
           builder: (_) => const InstitutionDashboard(),
-        );
-
-      case '/institution/students':
-        return MaterialPageRoute(
-          builder: (_) => const InstitutionStudents(),
         );
 
       case '/institution/students/add':

@@ -2,7 +2,6 @@ import 'package:edusponsor/config.dart';
 import 'package:edusponsor/institution/components/instdashboard.dart';
 import 'package:edusponsor/institution/components/instsettings.dart';
 import 'package:edusponsor/institution/components/inststudentadd.dart';
-import 'package:edusponsor/institution/components/inststudents.dart';
 import 'package:edusponsor/institution/cubit/instituteprofilecubit/institutionprofile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +22,6 @@ class _InstitutionState extends State<Institution> {
 
   final List<dynamic> _pageTitles = [
     {"pageTitle": "Dashboard", "pageRoute": "/institution/dashboard"},
-    {"pageTitle": "Students", "pageRoute": "/institution/students"},
     {"pageTitle": "Students Add", "pageRoute": "/institution/students/add"},
     {"pageTitle": "Settings", "pageRoute": "/institution/settings"},
   ];
@@ -207,10 +205,6 @@ class _InstitutionState extends State<Institution> {
                           return MaterialPageRoute(
                             builder: (_) => const InstitutionDashboard(),
                           );
-                        case '/institution/students':
-                          return MaterialPageRoute(
-                            builder: (_) => const InstitutionStudents(),
-                          );
                         case '/institution/students/add':
                           return MaterialPageRoute(
                             builder: (_) => const InstitutionStudentAdd(),
@@ -244,7 +238,7 @@ class _InstitutionState extends State<Institution> {
       case 1:
         return Icons.school;
       case 2:
-        return Icons.people;
+        return Icons.settings;
       case 3:
         return Icons.settings;
       default:

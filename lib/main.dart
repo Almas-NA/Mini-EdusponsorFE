@@ -15,7 +15,9 @@ import 'package:edusponsor/institution/cubit/instituteprofilecubit/institutionpr
 import 'package:edusponsor/institution/cubit/studentcubit/student_cubit.dart';
 import 'package:edusponsor/login/authcubit/user_cubit.dart';
 import 'package:edusponsor/login/registercubit/register_cubit.dart';
+import 'package:edusponsor/sponsor/cubit/sponsorinfocubit/sponsorinfo_cubit.dart';
 import 'package:edusponsor/student/cubit/dashboardcubit/studdashboard_cubit.dart';
+import 'package:edusponsor/student/cubit/studentinfocubit/studinfo_cubit.dart';
 import 'package:edusponsor/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -73,6 +75,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => InstitutionprofileCubit()),
         BlocProvider(create: (context) => StudentCubit()),
         BlocProvider(create: (context) => StuddashboardCubit()),
+        BlocProvider(create: (context) => StudinfoCubit()),
+        BlocProvider(create: (context) => SponsorinfoCubit()),
       ],
       child: GetMaterialApp(
         title: 'Flutter Demo',
