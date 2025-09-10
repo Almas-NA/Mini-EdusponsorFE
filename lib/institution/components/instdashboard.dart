@@ -1058,27 +1058,29 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
       child: ListTile(
         leading: const Icon(Icons.school, color: Colors.cyan),
         title: Text("$year - ₹$fee"),
-        trailing: (isSponsorActive&&isCardActive)
-            ? AbsorbPointer(
-              absorbing: !isCardActive,
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width*0.1,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
-                      foregroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      elevation: 3,
-                    ),
-                    onPressed: () {},
-                    child: Text("Request",style: TextStyle(color: Colors.black),),
-                  ),
-              ),
-            )
-            : Container(
+        trailing:
+        //  (isSponsorActive&&isCardActive)
+        //     ? AbsorbPointer(
+        //       absorbing: !isCardActive,
+        //       child: SizedBox(
+        //         width: MediaQuery.of(context).size.width*0.1,
+        //         child: ElevatedButton(
+        //             style: ElevatedButton.styleFrom(
+        //               backgroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
+        //               foregroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
+        //               padding: const EdgeInsets.symmetric(vertical: 14),
+        //               shape: RoundedRectangleBorder(
+        //                 borderRadius: BorderRadius.circular(12),
+        //               ),
+        //               elevation: 3,
+        //             ),
+        //             onPressed: () {},
+        //             child: Text("Request",style: TextStyle(color: Colors.black),),
+        //           ),
+        //       ),
+        //     )
+        //     : 
+            Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 6,
