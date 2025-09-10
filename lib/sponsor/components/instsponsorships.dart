@@ -39,12 +39,14 @@ class _SponsorInstSponsorshipsState extends State<SponsorInstSponsorships> {
   }
 
   Color getStatusColor(String? status) {
-    switch (status!.toLowerCase()) {
-      case 'Paid':
+    if (status == null) return Colors.grey.shade400;
+
+    switch (status.toLowerCase()) {
+      case 'paid':
         return Colors.green.shade400;
-      case 'Rejected':
+      case 'rejected':
         return Colors.red.shade400;
-      case 'Accepted':
+      case 'accepted':
         return const Color.fromARGB(255, 38, 60, 255);
       case 'requested':
         return const Color.fromARGB(255, 191, 80, 239);
