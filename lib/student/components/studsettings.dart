@@ -1,5 +1,4 @@
 import 'package:edusponsor/Common/inputdecoration.dart';
-import 'package:edusponsor/Common/widgets.dart';
 import 'package:edusponsor/config.dart';
 import 'package:edusponsor/student/cubit/studentinfocubit/studinfo_cubit.dart';
 import 'package:flutter/material.dart';

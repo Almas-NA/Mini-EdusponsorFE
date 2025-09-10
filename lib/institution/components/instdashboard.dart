@@ -218,7 +218,8 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
       ),
     );
   }
-   Widget _buildStudentCard(Map student, int index) {
+
+  Widget _buildStudentCard(Map student, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -874,12 +875,14 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
       builder: (BuildContext context) {
         Color getStatusColor(String status) {
           switch (status.toLowerCase()) {
-            case 'paid':
+            case 'Paid':
               return Colors.green.shade400;
-            case 'pending':
-              return Colors.orange.shade400;
-            case 'overdue':
+            case 'Rejected':
               return Colors.red.shade400;
+            case 'Accepted':
+              return const Color.fromARGB(255, 38, 60, 255);
+            case 'requested':
+              return const Color.fromARGB(255, 191, 80, 239);
             default:
               return Colors.grey.shade400;
           }
@@ -977,6 +980,8 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                         getStatusColor(
                           sponsorshipDetail['yearOneFeeStatus'] ?? "",
                         ),
+                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
+                        true
                       ),
                       _buildYearCard(
                         "2nd Year",
@@ -985,6 +990,8 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                         getStatusColor(
                           sponsorshipDetail['yearTwoFeeStatus'] ?? "",
                         ),
+                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
+                        (sponsorshipDetail['yearOneFeeStatus']=="paid")?true:false
                       ),
                       _buildYearCard(
                         "3rd Year",
@@ -993,6 +1000,8 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                         getStatusColor(
                           sponsorshipDetail['yearThreeFeeStatus'] ?? "",
                         ),
+                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
+                        (sponsorshipDetail['yearTwoFeeStatus']=="paid")?true:false
                       ),
                       _buildYearCard(
                         "4th Year",
@@ -1001,24 +1010,26 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                         getStatusColor(
                           sponsorshipDetail['yearFourFeeStatus'] ?? "",
                         ),
+                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
+                        (sponsorshipDetail['yearThreeFeeStatus']=="paid")?true:false
                       ),
-
                       const SizedBox(height: 20),
-
-                      // Sponsor ID Card
-                      Card(
-                        elevation: 3,
-                        shape: RoundedRectangleBorder(
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.cyan.shade50,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        color: Colors.cyan.shade50,
                         child: ListTile(
-                          leading: const Icon(Icons.person, color: Colors.cyan),
+                          leading: Icon(Icons.person, color: secondaryColor),
                           title: const Text(
-                            "Sponsor ID",
+                            "Sponsor Status",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: Text(sponsorshipDetail['sponsorId'] ?? "-"),
+                          subtitle: Text(
+                            (sponsorshipDetail['sponsorId'] != "")
+                                ? "Active"
+                                : "Not active",
+                          ),
                         ),
                       ),
                     ],
@@ -1037,6 +1048,8 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
     String fee,
     String status,
     Color statusColor,
+    bool isSponsorActive,
+    bool isCardActive,
   ) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -1045,22 +1058,60 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
       child: ListTile(
         leading: const Icon(Icons.school, color: Colors.cyan),
         title: Text("$year - ₹$fee"),
-        trailing: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-          decoration: BoxDecoration(
-            color: statusColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            status,
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        trailing: (isSponsorActive&&isCardActive)
+            ? AbsorbPointer(
+              absorbing: !isCardActive,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width*0.1,
+                child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
+                      foregroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 3,
+                    ),
+                    onPressed: () {},
+                    child: Text("Request",style: TextStyle(color: Colors.black),),
+                  ),
+              ),
+            )
+            : Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: statusColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  status,
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 191, 80, 239),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
       ),
     );
+  }
+
+  String getStatusColor(String? status) {
+    switch (status!.toLowerCase()) {
+      case 'Paid':
+        return "";
+      case 'Rejected':
+        return "";
+      case 'Accepted':
+        return "";
+      case 'requested':
+        return "";
+      default:
+        return "Request";
+    }
   }
 
   void showIncomeProofDialog(BuildContext context, String base64) {

@@ -1,5 +1,6 @@
 import 'package:edusponsor/config.dart';
 import 'package:edusponsor/sponsor/components/sponsdashboard.dart';
+import 'package:edusponsor/sponsor/components/sponsinstitutions.dart';
 import 'package:edusponsor/sponsor/components/sponssettings.dart';
 import 'package:edusponsor/sponsor/cubit/sponsorinfocubit/sponsorinfo_cubit.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ class _SponsorState extends State<Sponsor> {
   Box box = Hive.box('eduSponsor');
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [SponsorDashboard(),SponsorSettings()];
+  final List<Widget> _pages = [SponsorDashboard(),SponsorInstitutions(),SponsorSettings()];
 
   void _getProfile() {
     Map body = {"id": box.get('userId')};
@@ -58,7 +59,7 @@ class _SponsorState extends State<Sponsor> {
             ),
           ),
           title: Text(
-            _selectedIndex == 0 ? "Dashboard" : "Settings",
+            _selectedIndex == 0 ? "Dashboard":(_selectedIndex == 1)?"Institution":"Settings",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18 * scalefactor,
@@ -152,7 +153,8 @@ class _SponsorState extends State<Sponsor> {
                 ),
                 const SizedBox(height: 10),
                 _buildDrawerItem(Icons.dashboard_rounded, "Dashboard", 0),
-                _buildDrawerItem(Icons.settings_rounded, "Settings", 1),
+                _buildDrawerItem(Icons.settings_rounded, "Institution", 1),
+                _buildDrawerItem(Icons.settings_rounded, "Settings", 2),
                 const Spacer(),
                 Padding(
                   padding: const EdgeInsets.symmetric(

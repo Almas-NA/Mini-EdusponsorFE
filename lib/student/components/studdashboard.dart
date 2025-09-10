@@ -16,12 +16,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
   // ######## Status Colors ######## //
   Color getStatusColor(String status) {
     switch (status.toLowerCase()) {
-      case 'paid':
+      case 'Paid':
         return Colors.green.shade400;
-      case 'pending':
-        return Colors.orange.shade400;
-      case 'overdue':
+      case 'Rejected':
         return Colors.red.shade400;
+      case 'Accepted':
+        return const Color.fromARGB(255, 38, 60, 255);
+      case 'requested':
+        return const Color.fromARGB(255, 191, 80, 239);
       default:
         return Colors.grey.shade400;
     }
@@ -110,28 +112,32 @@ class _StudentDashboardState extends State<StudentDashboard> {
                     sponsorshipDetail['yearOneFee'] ?? "0",
                     sponsorshipDetail['yearOneFeeStatus'] ?? "N/A",
                     getStatusColor(
-                        sponsorshipDetail['yearOneFeeStatus'] ?? "N/A"),
+                      sponsorshipDetail['yearOneFeeStatus'] ?? "N/A",
+                    ),
                   ),
                   _buildYearCard(
                     "2nd Year",
                     sponsorshipDetail['yearTwoFee'] ?? "0",
                     sponsorshipDetail['yearTwoFeeStatus'] ?? "N/A",
                     getStatusColor(
-                        sponsorshipDetail['yearTwoFeeStatus'] ?? "N/A"),
+                      sponsorshipDetail['yearTwoFeeStatus'] ?? "N/A",
+                    ),
                   ),
                   _buildYearCard(
                     "3rd Year",
                     sponsorshipDetail['yearThreeFee'] ?? "0",
                     sponsorshipDetail['yearThreeFeeStatus'] ?? "N/A",
                     getStatusColor(
-                        sponsorshipDetail['yearThreeFeeStatus'] ?? "N/A"),
+                      sponsorshipDetail['yearThreeFeeStatus'] ?? "N/A",
+                    ),
                   ),
                   _buildYearCard(
                     "4th Year",
                     sponsorshipDetail['yearFourFee'] ?? "0",
                     sponsorshipDetail['yearFourFeeStatus'] ?? "N/A",
                     getStatusColor(
-                        sponsorshipDetail['yearFourFeeStatus'] ?? "N/A"),
+                      sponsorshipDetail['yearFourFeeStatus'] ?? "N/A",
+                    ),
                   ),
 
                   const SizedBox(height: 20),
@@ -149,8 +155,9 @@ class _StudentDashboardState extends State<StudentDashboard> {
                         "Sponsor ID",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      subtitle:
-                          Text(sponsorshipDetail['sponsorId'] ?? "Unknown"),
+                      subtitle: Text(
+                        sponsorshipDetail['sponsorId'] ?? "Unknown",
+                      ),
                     ),
                   ),
                 ],
