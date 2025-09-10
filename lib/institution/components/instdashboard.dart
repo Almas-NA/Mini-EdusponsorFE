@@ -328,30 +328,6 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                   ],
                 ),
               ),
-              if (student['incomeProofBaseSF'] != null &&
-                  student['incomeProofBaseSF'].isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.cyan,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      showIncomeProofDialog(
-                        context,
-                        student['incomeProofBaseSF'],
-                      );
-                    },
-                    icon: const Icon(Icons.picture_as_pdf, color: Colors.white),
-                    label: const Text(
-                      "View Income Proof",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -1026,9 +1002,10 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            (sponsorshipDetail['sponsorId'] != "")
-                                ? "Active"
-                                : "Not active",
+                            // (sponsorshipDetail['sponsorId'] != "")
+                            //     ? "Active"
+                            //     : 
+                                "Not active",
                           ),
                         ),
                       ),
