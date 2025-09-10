@@ -259,7 +259,7 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
 
                 // Email
                 TextFormField(
-                  controller: _emailController,
+                  controller: _contactNumber,
                   decoration: getInputDecoration("contactNumber"),
                   validator: _validateEmail,
                 ),
