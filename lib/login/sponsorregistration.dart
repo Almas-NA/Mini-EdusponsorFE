@@ -23,7 +23,7 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
   final TextEditingController _rePasswordController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _contactNumber= TextEditingController();
+  final TextEditingController _contactNumber = TextEditingController();
   String? _selectedLocation;
   String? _base64IncomeProof;
 
@@ -257,12 +257,21 @@ class _SponsorRegistrationState extends State<SponsorRegistration> {
                 ),
                 const SizedBox(height: 12),
 
-                // Email
                 TextFormField(
                   controller: _contactNumber,
-                  decoration: getInputDecoration("contactNumber"),
-                  validator: _validateEmail,
+                  keyboardType: TextInputType.phone,
+                  decoration: getInputDecoration("Contact Number"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Contact number is required";
+                    }
+                    if (!RegExp(r'^[0-9]{10}$').hasMatch(value)) {
+                      return "Enter a valid 10-digit number";
+                    }
+                    return null;
+                  },
                 ),
+
                 const SizedBox(height: 12),
 
                 // File picker
