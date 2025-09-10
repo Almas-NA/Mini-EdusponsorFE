@@ -205,6 +205,13 @@ class _AdminInstitutionsState extends State<AdminInstitutions> {
                                           label: _buildHeader("Username"),
                                         ),
                                         GridColumn(
+                                          columnName: 'institutionId',
+                                          minimumWidth: scalefactor > 1
+                                              ? 200
+                                              : 120,
+                                          label: _buildHeader("Institution ID"),
+                                        ),
+                                        GridColumn(
                                           columnName: 'location',
                                           minimumWidth: scalefactor > 1
                                               ? 150

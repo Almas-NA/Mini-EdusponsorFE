@@ -47,6 +47,10 @@ class SFDataGridSourceInstitution extends DataGridSource {
               value: (dataGridRow['username'] ?? "").toString(),
             ),
             DataGridCell<String>(
+              columnName: 'institutionId',
+              value: (dataGridRow['instituteId'] ?? "").toString(),
+            ),
+            DataGridCell<String>(
               columnName: 'location',
               value: (dataGridRow['location'] ?? "").toString(),
             ),
