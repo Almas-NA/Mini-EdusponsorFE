@@ -201,17 +201,8 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                   ),
                 ),
                 Expanded(
-                  child: GridView.builder(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 12,
-                    ),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // responsive layout for web & mobile
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 1.4, // adjust height/width of cards
-                    ),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     itemCount: filteredStudents.length,
                     itemBuilder: (context, index) {
                       final student = filteredStudents[index];
@@ -227,8 +218,7 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
       ),
     );
   }
-
-  Widget _buildStudentCard(Map student, int index) {
+   Widget _buildStudentCard(Map student, int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -247,7 +237,6 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
-            initiallyExpanded: true,
             backgroundColor: Colors.transparent,
             collapsedBackgroundColor: Colors.transparent,
             shape: RoundedRectangleBorder(
@@ -338,6 +327,30 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                   ],
                 ),
               ),
+              if (student['incomeProofBaseSF'] != null &&
+                  student['incomeProofBaseSF'].isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.cyan,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      showIncomeProofDialog(
+                        context,
+                        student['incomeProofBaseSF'],
+                      );
+                    },
+                    icon: const Icon(Icons.picture_as_pdf, color: Colors.white),
+                    label: const Text(
+                      "View Income Proof",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
