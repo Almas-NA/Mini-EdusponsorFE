@@ -81,32 +81,67 @@ class _InstitutionRegistrationState extends State<InstitutionRegistration> {
             Navigator.pop(context);
           }
         },
-        child: Stack(
-          children: [
-            // Background
-            SizedBox.expand(
-              child: Image.asset(
-                'assets/images/loginbackground.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-            // Scrollable content
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(bottom: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.5,
-                      child: Image.asset('assets/images/edusponsorlogo.png'),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            bool isWide = constraints.maxWidth > 800;
+
+            if (isWide) {
+              // 💻 Web/Desktop layout
+              return Stack(
+                children: [
+                  // Background
+                  SizedBox.expand(
+                    child: Image.asset(
+                      'assets/images/loginbackground.png',
+                      fit: BoxFit.cover,
                     ),
-                    registerInstitutionForm(),
-                  ],
-                ),
-              ),
-            ),
-          ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      // Logo on left
+                      SizedBox(
+                        width: constraints.maxWidth * 0.4,
+                        child: Image.asset('assets/images/edusponsorlogo.png'),
+                      ),
+                      // Form on right
+                      SizedBox(
+                        width: constraints.maxWidth * 0.35,
+                        child: SingleChildScrollView(
+                          child: registerInstitutionForm(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            } else {
+              // 📱 Mobile layout
+              return Stack(
+                children: [
+                  SizedBox.expand(
+                    child: Image.asset(
+                      'assets/images/loginbackground.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.5,
+                          child: Image.asset(
+                            'assets/images/edusponsorlogo.png',
+                          ),
+                        ),
+                        registerInstitutionForm(),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
         ),
       ),
     );
@@ -130,207 +165,207 @@ class _InstitutionRegistrationState extends State<InstitutionRegistration> {
       padding: const EdgeInsets.all(24.0),
       child: BlocBuilder<RegisterCubit, RegisterState>(
         builder: (context, state) {
-            return FormBuilder(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'Register',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 48,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                    ),
+          return FormBuilder(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text(
+                  'Register',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Institution',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 18,
-                      fontFamily: 'Poppins',
-                    ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Institution',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 18,
+                    fontFamily: 'Poppins',
                   ),
-                  const SizedBox(height: 32),
+                ),
+                const SizedBox(height: 32),
 
-                  // Username
-                  TextFormField(
-                    controller: _usernameController,
-                    decoration: getInputDecoration("Username"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter a username";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12),
+                // Username
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: getInputDecoration("Username"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter a username";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
 
-                  // Password
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: getInputDecoration("Password").copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                    obscureText: !_isPasswordVisible,
-                    validator: (value) {
-                      if (value == null || value.length < 6) {
-                        return "Password must be at least 6 characters";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Re-enter Password
-                  TextFormField(
-                    controller: _rePasswordController,
-                    decoration:
-                        getInputDecoration("Re-enter Password").copyWith(
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isRePasswordVisible
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _isRePasswordVisible = !_isRePasswordVisible;
-                          });
-                        },
-                      ),
-                    ),
-                    obscureText: !_isRePasswordVisible,
-                    validator: (value) {
-                      if (value != _passwordController.text) {
-                        return "Passwords do not match";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Email
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: getInputDecoration("Email"),
-                    validator: _validateEmail,
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Institution Name
-                  TextFormField(
-                    controller: _institutionNameController,
-                    decoration: getInputDecoration("Institution Name"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter institution name";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Institution ID
-                  TextFormField(
-                    controller: _institutionIdController,
-                    decoration: getInputDecoration("Institution ID"),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return "Please enter institution ID";
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Location
-                  DropdownButtonFormField<String>(
-                    value: _selectedLocation,
-                    decoration: getInputDecoration("Location"),
-                    items: _locations.map((location) {
-                      return DropdownMenuItem(
-                        value: location,
-                        child: Text(location),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedLocation = value;
-                      });
-                    },
-                    validator: (value) =>
-                        value == null ? "Please select a location" : null,
-                  ),
-                  const SizedBox(height: 24),
-
-                  (state is RegisterInstLoading)?LoadingIndicator():
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0D6EFD),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      elevation: 5,
-                    ),
-                    onPressed: _submitForm,
-                    child: const Text(
-                      "Register",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                // Password
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: getInputDecoration("Password").copyWith(
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isPasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.white,
-                        fontFamily: 'Poppins',
                       ),
+                      onPressed: () {
+                        setState(() {
+                          _isPasswordVisible = !_isPasswordVisible;
+                        });
+                      },
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  obscureText: !_isPasswordVisible,
+                  validator: (value) {
+                    if (value == null || value.length < 6) {
+                      return "Password must be at least 6 characters";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
 
-                  // Back Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                // Re-enter Password
+                TextFormField(
+                  controller: _rePasswordController,
+                  decoration: getInputDecoration("Re-enter Password").copyWith(
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _isRePasswordVisible
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.white,
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      elevation: 5,
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      "Back",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontFamily: 'Poppins',
-                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isRePasswordVisible = !_isRePasswordVisible;
+                        });
+                      },
                     ),
                   ),
-                ],
-              ),
-            );
-          }
+                  obscureText: !_isRePasswordVisible,
+                  validator: (value) {
+                    if (value != _passwordController.text) {
+                      return "Passwords do not match";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // Email
+                TextFormField(
+                  controller: _emailController,
+                  decoration: getInputDecoration("Email"),
+                  validator: _validateEmail,
+                ),
+                const SizedBox(height: 12),
+
+                // Institution Name
+                TextFormField(
+                  controller: _institutionNameController,
+                  decoration: getInputDecoration("Institution Name"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter institution name";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // Institution ID
+                TextFormField(
+                  controller: _institutionIdController,
+                  decoration: getInputDecoration("Institution ID"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please enter institution ID";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // Location
+                DropdownButtonFormField<String>(
+                  value: _selectedLocation,
+                  decoration: getInputDecoration("Location"),
+                  items: _locations.map((location) {
+                    return DropdownMenuItem(
+                      value: location,
+                      child: Text(location),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedLocation = value;
+                    });
+                  },
+                  validator: (value) =>
+                      value == null ? "Please select a location" : null,
+                ),
+                const SizedBox(height: 24),
+
+                (state is RegisterInstLoading)
+                    ? LoadingIndicator()
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0D6EFD),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          elevation: 5,
+                        ),
+                        onPressed: _submitForm,
+                        child: const Text(
+                          "Register",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ),
+                const SizedBox(height: 12),
+
+                // Back Button
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    elevation: 5,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    "Back",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

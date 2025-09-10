@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.0),
                         child: Text(
-                          '"Only admin can access the web page"',
+                          '"Only admin and institution can access the web page"',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white70,
@@ -299,37 +299,36 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          if (!kIsWeb)
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  elevation: 5,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                    context,
-                                    "/register/institution",
-                                  );
-                                },
-                                child: const Text(
-                                  "Institution Registration",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                    fontFamily: 'Poppins',
-                                  ),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                elevation: 5,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  "/register/institution",
+                                );
+                              },
+                              child: const Text(
+                                "Institution Registration",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontFamily: 'Poppins',
                                 ),
                               ),
                             ),
+                          ),
                           if (!kIsWeb)
                             Padding(
                               padding: const EdgeInsets.all(8.0),
