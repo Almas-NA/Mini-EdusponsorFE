@@ -1,4 +1,6 @@
+import 'package:edusponsor/Common/loading_indicator%20copy.dart';
 import 'package:edusponsor/config.dart';
+import 'package:edusponsor/login/authcubit/user_cubit.dart';
 import 'package:edusponsor/sponsor/components/sponsdashboard.dart';
 import 'package:edusponsor/sponsor/components/sponsinstitutions.dart';
 import 'package:edusponsor/sponsor/components/sponssettings.dart';
@@ -18,7 +20,11 @@ class _SponsorState extends State<Sponsor> {
   Box box = Hive.box('eduSponsor');
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [SponsorDashboard(),SponsorInstitutions(),SponsorSettings()];
+  final List<Widget> _pages = [
+    SponsorDashboard(),
+    SponsorInstitutions(),
+    SponsorSettings(),
+  ];
 
   void _getProfile() {
     Map body = {"id": box.get('userId')};
@@ -59,7 +65,11 @@ class _SponsorState extends State<Sponsor> {
             ),
           ),
           title: Text(
-            _selectedIndex == 0 ? "Dashboard":(_selectedIndex == 1)?"Institution":"Settings",
+            _selectedIndex == 0
+                ? "Dashboard"
+                : (_selectedIndex == 1)
+                ? "Institution"
+                : "Settings",
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18 * scalefactor,
@@ -78,11 +88,25 @@ class _SponsorState extends State<Sponsor> {
         ),
       ),
       drawer: _buildDrawer(context),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 350),
-        transitionBuilder: (child, animation) =>
-            FadeTransition(opacity: animation, child: child),
-        child: _pages[_selectedIndex],
+      body: BlocConsumer<UserCubit, UserState>(
+        listener: (context, state) {
+          if (state is LogOutSuccess) {
+            Navigator.of(
+              context,
+            ).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+          }
+        },
+        builder: (context, state) {
+          if (state is LogOutLoading) {
+            return Center(child: LoadingIndicator());
+          }
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 350),
+            transitionBuilder: (child, animation) =>
+                FadeTransition(opacity: animation, child: child),
+            child: _pages[_selectedIndex],
+          );
+        },
       ),
     );
   }
@@ -185,7 +209,7 @@ class _SponsorState extends State<Sponsor> {
                           ),
                         ),
                         onTap: () {
-                          // TODO: add logout function
+                          context.read<UserCubit>().userLogOut(context);
                         },
                       ),
                       const SizedBox(height: 6),

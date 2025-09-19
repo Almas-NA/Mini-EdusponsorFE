@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:edusponsor/Common/enums/paymentresponse.dart';
 import 'package:edusponsor/Common/enums/response_type_enum.dart';
 import 'package:edusponsor/Common/inputdecoration.dart';
+import 'package:edusponsor/Common/loading_indicator.dart';
 import 'package:edusponsor/Common/network/dio_fetch_api.dart';
 import 'package:edusponsor/Common/widgets.dart';
 import 'package:edusponsor/config.dart';
 import 'package:edusponsor/institution/cubit/studentcubit/student_cubit.dart';
+import 'package:edusponsor/sponsor/cubit/sponsorshipstatuscubit/sponsorshipstatus_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -30,7 +33,7 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
   final TextEditingController _incomeController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String? _selectedYear;
-  final List<String> _years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+  final List<String> _years = ['1', '2', '3', '4'];
   Box box = Hive.box('eduSponsor');
   ButtonStyle buttonStyle = ElevatedButton.styleFrom(
     backgroundColor: primaryShadeLight,
@@ -380,6 +383,7 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                               ServerResponseType.SUCCESS.name) {
                             showSponsorshipDetailsDialog(
                               response['responseData']['data'][0] ?? {},
+                              student['year'],
                             );
                           } else {
                             addYearFeesDialog(student);
@@ -679,8 +683,22 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
         TextEditingController();
     final TextEditingController yearFourFeeController = TextEditingController();
     String? selectedPriority;
-    final GlobalKey<FormState> _feesFormKey = GlobalKey<FormState>();
-
+    final GlobalKey<FormState> feesFormKey = GlobalKey<FormState>();
+    int yearInt = int.parse(studentDetail['year']);
+    bool year1 = true;
+    bool year2 = true;
+    bool year3 = true;
+    bool year4 = true;
+    if (yearInt == 2) {
+      year1 = false;
+    } else if (yearInt == 3) {
+      year1 = false;
+      year2 = false;
+    } else if (yearInt == 4) {
+      year1 = false;
+      year2 = false;
+      year3 = false;
+    }
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -717,53 +735,57 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Form(
-                  key: _feesFormKey,
+                  key: feesFormKey,
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        TextFormField(
-                          controller: yearOneFeeController,
-                          keyboardType: TextInputType.number,
-                          decoration: getInputDecoration("1st Year Fee")
-                              .copyWith(
-                                prefixIcon: const Icon(Icons.currency_rupee),
-                              ),
-                          validator: (value) =>
-                              value!.isEmpty ? "Enter 1st year fee" : null,
-                        ),
+                        if (year1)
+                          TextFormField(
+                            controller: yearOneFeeController,
+                            keyboardType: TextInputType.number,
+                            decoration: getInputDecoration("1st Year Fee")
+                                .copyWith(
+                                  prefixIcon: const Icon(Icons.currency_rupee),
+                                ),
+                            validator: (value) =>
+                                value!.isEmpty ? "Enter 1st year fee" : null,
+                          ),
                         const SizedBox(height: 12),
-                        TextFormField(
-                          controller: yearTwoFeeController,
-                          keyboardType: TextInputType.number,
-                          decoration: getInputDecoration("2nd Year Fee")
-                              .copyWith(
-                                prefixIcon: const Icon(Icons.currency_rupee),
-                              ),
-                          validator: (value) =>
-                              value!.isEmpty ? "Enter 2nd year fee" : null,
-                        ),
+                        if (year2)
+                          TextFormField(
+                            controller: yearTwoFeeController,
+                            keyboardType: TextInputType.number,
+                            decoration: getInputDecoration("2nd Year Fee")
+                                .copyWith(
+                                  prefixIcon: const Icon(Icons.currency_rupee),
+                                ),
+                            validator: (value) =>
+                                value!.isEmpty ? "Enter 2nd year fee" : null,
+                          ),
                         const SizedBox(height: 12),
-                        TextFormField(
-                          controller: yearThreeFeeController,
-                          keyboardType: TextInputType.number,
-                          decoration: getInputDecoration("3rd Year Fee")
-                              .copyWith(
-                                prefixIcon: const Icon(Icons.currency_rupee),
-                              ),
-                          validator: (value) =>
-                              value!.isEmpty ? "Enter 3rd year fee" : null,
-                        ),
+                        if (year3)
+                          TextFormField(
+                            controller: yearThreeFeeController,
+                            keyboardType: TextInputType.number,
+                            decoration: getInputDecoration("3rd Year Fee")
+                                .copyWith(
+                                  prefixIcon: const Icon(Icons.currency_rupee),
+                                ),
+                            validator: (value) =>
+                                value!.isEmpty ? "Enter 3rd year fee" : null,
+                          ),
                         const SizedBox(height: 12),
-                        TextFormField(
-                          controller: yearFourFeeController,
-                          keyboardType: TextInputType.number,
-                          decoration: getInputDecoration("4th Year Fee")
-                              .copyWith(
-                                prefixIcon: const Icon(Icons.currency_rupee),
-                              ),
-                          validator: (value) =>
-                              value!.isEmpty ? "Enter 4th year fee" : null,
-                        ),
+                        if (year4)
+                          TextFormField(
+                            controller: yearFourFeeController,
+                            keyboardType: TextInputType.number,
+                            decoration: getInputDecoration("4th Year Fee")
+                                .copyWith(
+                                  prefixIcon: const Icon(Icons.currency_rupee),
+                                ),
+                            validator: (value) =>
+                                value!.isEmpty ? "Enter 4th year fee" : null,
+                          ),
                         const SizedBox(height: 12),
 
                         // Priority dropdown
@@ -806,7 +828,7 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                               elevation: 3,
                             ),
                             onPressed: () {
-                              if (_feesFormKey.currentState!.validate()) {
+                              if (feesFormKey.currentState!.validate()) {
                                 final feesData = {
                                   "institutionId": box.get('userId'),
                                   "studentId": studentDetail['id'],
@@ -814,6 +836,22 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                                   "yearTwoFee": yearTwoFeeController.text,
                                   "yearThreeFee": yearThreeFeeController.text,
                                   "yearFourFee": yearFourFeeController.text,
+                                  "yearOneFeeStatus":
+                                      (yearOneFeeController.text.isEmpty)
+                                      ? PaymentResponse.PAID.name
+                                      : null,
+                                  "yearTwoFeeStatus":
+                                      (yearTwoFeeController.text.isEmpty)
+                                      ? PaymentResponse.PAID.name
+                                      : null,
+                                  "yearThreeFeeStatus":
+                                      (yearThreeFeeController.text.isEmpty)
+                                      ? PaymentResponse.PAID.name
+                                      : null,
+                                  "yearFourFeeStatus":
+                                      (yearFourFeeController.text.isEmpty)
+                                      ? PaymentResponse.PAID.name
+                                      : null,
                                   "priority": selectedPriority,
                                 };
                                 context.read<StudentCubit>().createSponsorship(
@@ -844,20 +882,35 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
     );
   }
 
-  void showSponsorshipDetailsDialog(Map sponsorshipDetail) {
+  void showSponsorshipDetailsDialog(Map sponsorshipDetail, String studYear) {
     showDialog(
       barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
+        // int yearInt = int.parse(studYear);
+        // bool year1 = true;
+        // bool year2 = true;
+        // bool year3 = true;
+        // bool year4 = true;
+        // if (yearInt == 2) {
+        //   year1 = false;
+        // } else if (yearInt == 3) {
+        //   year1 = false;
+        //   year2 = false;
+        // } else if (yearInt == 4) {
+        //   year1 = false;
+        //   year2 = false;
+        //   year3 = false;
+        // }
         Color getStatusColor(String status) {
-          switch (status.toLowerCase()) {
-            case 'Paid':
+          switch (status) {
+            case 'PAID':
               return Colors.green.shade400;
-            case 'Rejected':
+            case 'REJECTED':
               return Colors.red.shade400;
-            case 'Accepted':
+            case 'ACCEPTED':
               return const Color.fromARGB(255, 38, 60, 255);
-            case 'requested':
+            case 'REQUESTED':
               return const Color.fromARGB(255, 191, 80, 239);
             default:
               return Colors.grey.shade400;
@@ -950,44 +1003,77 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
 
                       // Year Cards
                       _buildYearCard(
+                        1,
+                        sponsorshipDetail['id'],
+                        "yearOneFeeStatus",
                         "1st Year",
-                        sponsorshipDetail['yearOneFee'] ?? "-",
-                        sponsorshipDetail['yearOneFeeStatus'] ?? "-",
+                        sponsorshipDetail['yearOneFee'] ?? "",
+                        sponsorshipDetail['yearOneFeeStatus'] ?? "",
                         getStatusColor(
                           sponsorshipDetail['yearOneFeeStatus'] ?? "",
                         ),
-                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
-                        true
+                        (sponsorshipDetail['sponsorId'] != "" &&
+                                sponsorshipDetail['sponsorId'] != null)
+                            ? true
+                            : false,
+                        true,
                       ),
                       _buildYearCard(
+                        2,
+                        sponsorshipDetail['id'],
+                        "yearTwoFeeStatus",
                         "2nd Year",
-                        sponsorshipDetail['yearTwoFee'] ?? "-",
-                        sponsorshipDetail['yearTwoFeeStatus'] ?? "-",
+                        sponsorshipDetail['yearTwoFee'] ?? "",
+                        sponsorshipDetail['yearTwoFeeStatus'] ?? "",
                         getStatusColor(
                           sponsorshipDetail['yearTwoFeeStatus'] ?? "",
                         ),
-                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
-                        (sponsorshipDetail['yearOneFeeStatus']=="paid")?true:false
+                        (sponsorshipDetail['sponsorId'] != "" &&
+                                sponsorshipDetail['sponsorId'] != null)
+                            ? true
+                            : false,
+                        (sponsorshipDetail['yearOneFeeStatus'] ==
+                                PaymentResponse.PAID.name)
+                            ? true
+                            : false,
                       ),
                       _buildYearCard(
+                        3,
+                        sponsorshipDetail['id'],
+                        "yearThreeFeeStatus",
                         "3rd Year",
-                        sponsorshipDetail['yearThreeFee'] ?? "-",
-                        sponsorshipDetail['yearThreeFeeStatus'] ?? "-",
+                        sponsorshipDetail['yearThreeFee'] ?? "",
+                        sponsorshipDetail['yearThreeFeeStatus'] ?? "",
                         getStatusColor(
                           sponsorshipDetail['yearThreeFeeStatus'] ?? "",
                         ),
-                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
-                        (sponsorshipDetail['yearTwoFeeStatus']=="paid")?true:false
+                        (sponsorshipDetail['sponsorId'] != "" &&
+                                sponsorshipDetail['sponsorId'] != null)
+                            ? true
+                            : false,
+                        (sponsorshipDetail['yearTwoFeeStatus'] ==
+                                PaymentResponse.PAID.name)
+                            ? true
+                            : false,
                       ),
                       _buildYearCard(
+                        4,
+                        sponsorshipDetail['id'],
+                        "yearFourFeeStatus",
                         "4th Year",
-                        sponsorshipDetail['yearFourFee'] ?? "-",
-                        sponsorshipDetail['yearFourFeeStatus'] ?? "-",
+                        sponsorshipDetail['yearFourFee'] ?? "",
+                        sponsorshipDetail['yearFourFeeStatus'] ?? "",
                         getStatusColor(
                           sponsorshipDetail['yearFourFeeStatus'] ?? "",
                         ),
-                        (sponsorshipDetail['sponsorId'] != "") ? true : false,
-                        (sponsorshipDetail['yearThreeFeeStatus']=="paid")?true:false
+                        (sponsorshipDetail['sponsorId'] != "" &&
+                                sponsorshipDetail['sponsorId'] != null)
+                            ? true
+                            : false,
+                        (sponsorshipDetail['yearThreeFeeStatus'] ==
+                                PaymentResponse.PAID.name)
+                            ? true
+                            : false,
                       ),
                       const SizedBox(height: 20),
                       Container(
@@ -997,15 +1083,76 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                         ),
                         child: ListTile(
                           leading: Icon(Icons.person, color: secondaryColor),
+                          trailing:
+                              (sponsorshipDetail['sponsorId'] != "" &&
+                                  sponsorshipDetail['sponsorId'] != null)
+                              ? BlocBuilder<
+                                  SponsorshipstatusCubit,
+                                  SponsorshipstatusState
+                                >(
+                                  builder: (context, state) {
+                                    if (state is SponsorshipstatusChanging&&state.index==0) {
+                                      return LoadingIndicator();
+                                    }
+                                    return ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: primaryShadeLight,
+                                        foregroundColor: primaryShadeLight,
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 14,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        elevation: 3,
+                                      ),
+                                      onPressed: () async {
+                                        Map body = {
+                                          "id": sponsorshipDetail['id'],
+                                          if (sponsorshipDetail['yearOneFeeStatus'] !=
+                                              PaymentResponse.PAID.name)
+                                            "yearOneFeeStatus": null,
+                                          if (sponsorshipDetail['yearTwoFeeStatus'] !=
+                                              PaymentResponse.PAID.name)
+                                            "yearTwoFeeStatus": null,
+                                          if (sponsorshipDetail['yearThreeFeeStatus'] !=
+                                              PaymentResponse.PAID.name)
+                                            "yearThreeFeeStatus": null,
+                                          if (sponsorshipDetail['yearFourFeeStatus'] !=
+                                              PaymentResponse.PAID.name)
+                                            "yearFourFeeStatus": null,
+                                          "sponsorId": null,
+                                        };
+                                        context
+                                            .read<SponsorshipstatusCubit>()
+                                            .changeSponsorshipStatus(body, 0);
+                                        await Future.delayed(
+                                          const Duration(seconds: 2),
+                                        );
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(
+                                          "Remove",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : SizedBox(),
                           title: const Text(
                             "Sponsor Status",
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            // (sponsorshipDetail['sponsorId'] != "")
-                            //     ? "Active"
-                            //     : 
-                                "Not active",
+                            (sponsorshipDetail['sponsorId'] != "" &&
+                                    sponsorshipDetail['sponsorId'] != null)
+                                ? "Active"
+                                : "Not active",
                           ),
                         ),
                       ),
@@ -1021,6 +1168,9 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
   }
 
   Widget _buildYearCard(
+    int index,
+    String sponsorshipID,
+    String yearName,
     String year,
     String fee,
     String status,
@@ -1034,30 +1184,47 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
       elevation: 3,
       child: ListTile(
         leading: const Icon(Icons.school, color: Colors.cyan),
-        title: Text("$year - ₹$fee"),
-        trailing:
-        //  (isSponsorActive&&isCardActive)
-        //     ? AbsorbPointer(
-        //       absorbing: !isCardActive,
-        //       child: SizedBox(
-        //         width: MediaQuery.of(context).size.width*0.1,
-        //         child: ElevatedButton(
-        //             style: ElevatedButton.styleFrom(
-        //               backgroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
-        //               foregroundColor: (!isCardActive)?Colors.grey:primaryShadeLight,
-        //               padding: const EdgeInsets.symmetric(vertical: 14),
-        //               shape: RoundedRectangleBorder(
-        //                 borderRadius: BorderRadius.circular(12),
-        //               ),
-        //               elevation: 3,
-        //             ),
-        //             onPressed: () {},
-        //             child: Text("Request",style: TextStyle(color: Colors.black),),
-        //           ),
-        //       ),
-        //     )
-        //     : 
-            Container(
+        title: Text("$year year - ₹$fee"),
+        trailing: (status.isEmpty && isSponsorActive && isCardActive)
+            ? SizedBox(
+                width: MediaQuery.of(context).size.width * 0.1,
+                child:
+                    BlocBuilder<SponsorshipstatusCubit, SponsorshipstatusState>(
+                      builder: (context, state) {
+                        if (state is SponsorshipstatusChanging &&
+                            state.index == index) {
+                          return LoadingIndicator();
+                        }
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryShadeLight,
+                            foregroundColor: primaryShadeLight,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 3,
+                          ),
+                          onPressed: () async {
+                            Map body = {
+                              "id": sponsorshipID,
+                              yearName: PaymentResponse.REQUESTED.name,
+                            };
+                            context
+                                .read<SponsorshipstatusCubit>()
+                                .changeSponsorshipStatus(body, index);
+                            await Future.delayed(const Duration(seconds: 2));
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(
+                            "Request",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        );
+                      },
+                    ),
+              )
+            : Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 12,
                   vertical: 6,
@@ -1067,9 +1234,9 @@ class _InstitutionDashboardState extends State<InstitutionDashboard> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  status,
-                  style: const TextStyle(
-                    color: Color.fromARGB(255, 191, 80, 239),
+                  (status.isEmpty) ? "_" : status,
+                  style: TextStyle(
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

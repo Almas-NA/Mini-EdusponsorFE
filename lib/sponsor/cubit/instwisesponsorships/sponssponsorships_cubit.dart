@@ -26,4 +26,23 @@ class SponssponsorshipsCubit extends Cubit<SponssponsorshipsState> {
       developer.log('', error: 'Unhandled exception: ${e.toString()}');
     }
   }
+
+  Future<void> getSponsSponsorships(Map body) async {
+    emit(SponssponsorshipsLoading());
+    await Future.delayed(const Duration(seconds: 2));
+    try {
+      final response = await FetchApi.postData(
+        endPoint: 'sponsor/get/sponsor/sponsorships',
+        body: body,
+      );
+      if ((response?['type'] == ServerResponseType.SUCCESS.name)) {
+        emit(SponssponsorshipsLoaded(sponsorships: response['responseData']['data']??[]));
+      } else if (response?['type'] == ServerResponseType.ERROR.name) {
+        emit(SponssponsorshipsError());
+      }
+    } on Exception catch (e) {
+      emit(SponssponsorshipsError());
+      developer.log('', error: 'Unhandled exception: ${e.toString()}');
+    }
+  }
 }

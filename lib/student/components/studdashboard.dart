@@ -15,14 +15,14 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   // ######## Status Colors ######## //
   Color getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'Paid':
+    switch (status) {
+      case 'PAID':
         return Colors.green.shade400;
-      case 'Rejected':
+      case 'REJECTED':
         return Colors.red.shade400;
-      case 'Accepted':
+      case 'ACCEPTED':
         return const Color.fromARGB(255, 38, 60, 255);
-      case 'requested':
+      case 'REQUESTED':
         return const Color.fromARGB(255, 191, 80, 239);
       default:
         return Colors.grey.shade400;

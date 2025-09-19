@@ -201,8 +201,8 @@ Future alertD({
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
                     width: (MediaQuery.of(context).size.width < 430)
-                        ? MediaQuery.of(context).size.width * 0.3
-                        : MediaQuery.of(context).size.width * 0.25,
+                        ? MediaQuery.of(context).size.width * 0.25
+                        : MediaQuery.of(context).size.width * 0.2,
                     child: ElevatedButton(
                       style: buttonStyle1 ??
                           ElevatedButton.styleFrom(
@@ -224,8 +224,8 @@ Future alertD({
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
                     width: (MediaQuery.of(context).size.width < 430)
-                        ? MediaQuery.of(context).size.width * 0.3
-                        : MediaQuery.of(context).size.width * 0.25,
+                        ? MediaQuery.of(context).size.width * 0.25
+                        : MediaQuery.of(context).size.width * 0.2,
                     child: ElevatedButton(
                       style: buttonStyle2 ??
                           ElevatedButton.styleFrom(

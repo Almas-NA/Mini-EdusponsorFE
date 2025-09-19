@@ -35,7 +35,7 @@ class _InstitutionStudentAddState extends State<InstitutionStudentAdd> {
   String? _selectedYear;
   String? _selectedRelation;
 
-  final List<String> _years = ['1st Year', '2nd Year', '3rd Year', '4th Year'];
+  final List<String> _years = ['1', '2', '3', '4'];
   final List<String> _relations = ['Father', 'Mother', 'Guardian', 'Other'];
 
   // For PDF Upload

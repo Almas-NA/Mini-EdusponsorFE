@@ -22,3 +22,6 @@ final class LoginFailed extends UserState {
   final List responseData;
   List<Object> get props => [responseData];
 }
+
+final class LogOutLoading extends UserState {}
+final class LogOutSuccess extends UserState {}

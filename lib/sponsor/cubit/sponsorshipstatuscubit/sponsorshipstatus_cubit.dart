@@ -10,8 +10,8 @@ class SponsorshipstatusCubit extends Cubit<SponsorshipstatusState> {
   SponsorshipstatusCubit() : super(SponsorshipstatusInitial());
 
 
-  Future<void> getSponsorInfo(Map body) async {
-    emit(SponsorshipstatusChanging());
+  Future<void> changeSponsorshipStatus(Map body,int index) async {
+    emit(SponsorshipstatusChanging(index: index));
     await Future.delayed(const Duration(seconds: 2));
     try {
       final response = await FetchApi.postData(
